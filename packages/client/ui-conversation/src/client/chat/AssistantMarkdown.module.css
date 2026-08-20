@@ -1,20 +1,20 @@
-/* Assistant flow body: full-width narration (figma 16/28), block gap 16.
-   IconActions sit below the body with an explicit 16px top margin (figma
-   43:32997) — separate from the body's internal gap so the footer spacing
-   stays fixed when the body is a single block. */
+/* Assistant flow body: Codex-style narration (14/22), block gap 10.
+   Tighter line-height (1.57 vs the old 1.75) gives a denser paragraph feel;
+   the 10px block gap keeps paragraph separation visible without the
+   over-spacing that made the body feel sparse. */
 
 .root {
   display: flex;
   flex-direction: column;
-  font-size: 16px;
-  line-height: 28px;
+  font-size: 14px;
+  line-height: 22px;
   color: var(--dsw-alias-label-primary);
 }
 
 .body {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 /* Interrupted-turn terminal marker: quiet inline tag, no animation. */

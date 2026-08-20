@@ -64,8 +64,11 @@
 /* Selection still sets data-selected for details linkage; no outline —
    tool rows match Think chrome (no selected ring). */
 
-/* Turn activity keeps the former loader's one-line footprint. A pale
-   brand-blue band sweeps from left to right; reduced-motion keeps it static. */
+/* Turn activity: a per-glyph "diving" wave. Each character runs the same
+   loop offset by a 120ms stagger (inline animation-delay), so the label reads
+   as letters taking turns plunging below the baseline and surfacing — a
+   continuous ripple that evokes deep thought. The parent keeps the brand-blue
+   fill; individual spans animate transform + opacity only. */
 .turnStatus {
   align-self: flex-start;
   flex: none;
@@ -74,21 +77,14 @@
   height: 26px;
   font: var(--dsw-font-s-strong-14);
   white-space: nowrap;
-  background: linear-gradient(
-    90deg,
-    var(--dsw-static-deepseek-500) 0%,
-    var(--dsw-static-deepseek-500) 40%,
-    var(--dsw-static-deepseek-200) 50%,
-    var(--dsw-static-deepseek-500) 60%,
-    var(--dsw-static-deepseek-500) 100%
-  );
-  background-position: 100% 0;
-  background-size: 250% 100%;
-  background-clip: text;
-  color: transparent;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: dsh-turn-status-shimmer 1.8s linear infinite;
+  color: var(--dsw-static-deepseek-500);
+}
+
+/* One diving glyph: wrap each char so it can transform independently; the
+   shared keyframes below run per span with its own delay. */
+.turnChar {
+  display: inline-block;
+  animation: dsh-turn-char-dive 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 .turnStatusClock {
@@ -97,20 +93,57 @@
   font-weight: 400;
   font-variant-numeric: tabular-nums;
   color: var(--dsw-alias-label-caption);
-  -webkit-text-fill-color: var(--dsw-alias-label-caption);
 }
 
-@keyframes dsh-turn-status-shimmer {
-  to {
-    background-position: 0 0;
+/* The dive: still-but-dark (thinking) → down + mid-bright (plunging in) →
+   up + full-bright (surfacing) → back to rest. 25% of the cycle is spent
+   settling back so the wave reads as continuous rather than a bounce. */
+@keyframes dsh-turn-char-dive {
+  0% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  30% {
+    transform: translateY(2px);
+    opacity: 0.75;
+  }
+  55% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .turnStatus {
-    background-position: 0 0;
-    background-size: 100% 100%;
-    animation: none;
+  .turnChar {
+    /* Respect the reduced-motion preference: slower, smaller-amplitude surge
+       (±1px) so the per-glyph motion stays visible but gentle — no sweeping
+       or flashing. */
+    animation: dsh-turn-char-dive-reduced 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+}
+
+@keyframes dsh-turn-char-dive-reduced {
+  0% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  30% {
+    transform: translateY(1px);
+    opacity: 0.8;
+  }
+  55% {
+    transform: translateY(-1px);
+    opacity: 1;
+  }
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
   }
 }
 
@@ -189,9 +222,4 @@
 
 .toBottom:hover {
   background: var(--dsw-alias-button-floating-hover);
-}
-
-/* Host open-path refusal: same dialog family as the workspace folder error. */
-.modalAction {
-  min-width: 72px;
 }
